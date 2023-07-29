@@ -48,7 +48,7 @@ user_genre = genres[genre_idx-1]
 # '중위 장르'와 '하위 장르' 중 둘 다 해당 장르를 포함하고 있는 행 추출
 genre_df = df[df['중위 장르'].eq(user_genre) | df['하위 장르'].eq(user_genre)]
 assert genre_df.empty is False, "선택한 장르에 해당하는 책이 없습니다."
-selected_books = genre_df.sample(n=5)
+selected_books = genre_df.sample(n=10)
 for i, book in selected_books.iterrows():
     print(f"{i}: {book['상품명']}")
 selected_books_idx = input("번호로 선호하는 책을 골라주세요(여러 개 선택 가능하며, 쉼표로 구분): ").split(",")
