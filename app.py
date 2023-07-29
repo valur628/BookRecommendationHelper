@@ -25,7 +25,7 @@ cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
 indices = pd.Series(df.index, index=df['상품명']).drop_duplicates()
 
 def recommend_books(df, genre, book_cosine_sim):
-    genre_df = df[df['중위 장르'] == genre]
+    genre_df = df[df['중위 장르'].eq(genre)]
     sim_scores = list(enumerate(book_cosine_sim))
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
 
@@ -45,17 +45,28 @@ for i, genre in enumerate(genres, 1):
 genre_idx = int(input("번호로 선호장르를 선택해 주세요: "))
 user_genre = genres[genre_idx-1]
 
-# 사용자가 선택한 장르를 기반으로 랜덤하게 책 5권 추출
-genre_df = df[df['하위 장르'] == user_genre]
+# '중위 장르'와 '하위 장르' 중 둘 다 해당 장르를 포함하고 있는 행 추출
+genre_df = df[df['중위 장르'].eq(user_genre) | df['하위 장르'].eq(user_genre)]
+assert genre_df.empty is False, "선택한 장르에 해당하는 책이 없습니다."
 selected_books = genre_df.sample(n=5)
 for i, book in selected_books.iterrows():
     print(f"{i}: {book['상품명']}")
 selected_books_idx = input("번호로 선호하는 책을 골라주세요(여러 개 선택 가능하며, 쉼표로 구분): ").split(",")
 selected_books = [selected_books.loc[int(no), '상품명'] for no in selected_books_idx]
 
+# 선호 장르 점수 추가
+df.loc[df['중위 장르'].eq(user_genre), '선호도 점수'] += 1.0
+df.loc[df['하위 장르'].eq(user_genre), '선호도 점수'] += 0.5
+
+# 각 책에 대한 유사도 점수를 계산하고 그 점수를 선호도 점수에 반영
 for book in selected_books:
     idx = indices[book]
-    recommend_books(df, df.loc[idx, '중위 장르'], cosine_sim[idx])
+    sim_scores = list(enumerate(cosine_sim[idx]))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1] if not isinstance(x[1], np.ndarray) else x[1][0], reverse=True)
+    sim_scores = sim_scores[1:31]
+    book_indices = [i[0] for i in sim_scores]
+    for i in book_indices:
+        df.loc[i, '선호도 점수'] += df.loc[i, '선호도 점수'] * (sim_scores[book_indices.index(i)][1] if not isinstance(sim_scores[book_indices.index(i)][1], np.ndarray) else sim_scores[book_indices.index(i)][1][0])
 
 # 최종적으로 가장 높은 선호도 점수를 가진 책 5권 추천
 recommendations = df.nlargest(5, '선호도 점수')
