@@ -30,13 +30,15 @@ for i, genre in enumerate(genres, 1):
 genre_idx = int(input("번호로 선호장르를 선택해 주세요: "))
 user_genre = genres[genre_idx-1]
 
+# '중위 장르'와 '하위 장르' 중 둘 다 해당 장르를 포함하고 있는 행 추출
 genre_df = df[df['중위 장르'].eq(user_genre) | df['하위 장르'].eq(user_genre)]
 assert genre_df.empty is False, "선택한 장르에 해당하는 책이 없습니다."
 selected_books = genre_df.sample(n=10)
+selected_books.reset_index(inplace=True)  # 인덱스 재설정
 for i, book in selected_books.iterrows():
-    print(f"{i}: {book['상품명']}")
+    print(f"{i+1}: {book['상품명']}")
 selected_books_idx = input("번호로 선호하는 책을 골라주세요(여러 개 선택 가능하며, 쉼표로 구분): ").split(",")
-selected_books = [selected_books.loc[int(no), '상품명'] for no in selected_books_idx]
+selected_books = [selected_books.loc[int(no)-1, '상품명'] for no in selected_books_idx]
 
 df.loc[df['중위 장르'].eq(user_genre), '선호도 점수'] += 1.0
 df.loc[df['하위 장르'].eq(user_genre), '선호도 점수'] += 0.5
