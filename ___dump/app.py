@@ -5,7 +5,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 
 # CSV 파일 읽기
-df = pd.read_csv('DB/books.csv')
+df = pd.read_csv('___dump/DB/books.csv')
 
 # 판매가에서 '원' 제거 및 숫자로 변환
 df['판매가'] = df['판매가'].str.replace("원", "").str.replace(",", "").astype(int)
@@ -40,8 +40,8 @@ for i, book in selected_books.iterrows():
 selected_books_idx = input("번호로 선호하는 책을 골라주세요(여러 개 선택 가능하며, 쉼표로 구분): ").split(",")
 selected_books = [selected_books.loc[int(no)-1, '상품명'] for no in selected_books_idx]
 
-df.loc[df['중위 장르'].eq(user_genre), '선호도 점수'] += 1.0
-df.loc[df['하위 장르'].eq(user_genre), '선호도 점수'] += 0.5
+df.loc[df['중위 장르'].eq(user_genre), '선호도 점수'] += 1.0 #1.0 너무 큼
+df.loc[df['하위 장르'].eq(user_genre), '선호도 점수'] += 0.5 #
 
 for book in selected_books:
     idx = indices[book]

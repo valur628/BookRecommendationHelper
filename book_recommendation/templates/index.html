@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>책 추천</title>
+        <link rel="stylesheet" href="/static/styles.css">
+    </head>
+<body>
+    <h1>책 추천</h1>
+
+    <form method="POST">
+        <label>장르 선택:</label>
+        <select name="genre">
+            {% for gen in genre %}
+                <option value="{{ gen }}">{{ gen }}</option>
+            {% endfor %}
+        </select>
+
+        <label>선호하는 책 선택:</label>
+        <select multiple name="books">
+            {% for book in names %}
+                <option value="{{ book }}">{{ book }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="submit" value="추천 받기">
+    </form>
+
+    {% if recommendations %}
+    {% for rec in recommendations %}
+        <p><strong>책 이름:</strong> {{ rec['상품명'] }}</p>
+        <p><strong>저자:</strong> {{ rec['저자'] }}</p>
+        <p><strong>출판사:</strong> {{ rec['출판사'] }}</p>
+        <p><strong>설명:</strong> {{ rec['설명'] }}</p>
+        <p><strong>선호도 점수:</strong> {{ rec['선호도 점수'] }}</p>
+    <hr>    
+    {% endfor %}
+{% endif %}
+</body>
+</html>
