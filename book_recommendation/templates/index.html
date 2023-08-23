@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>책 추천</title>
+        <title>책 추천 사이트</title>
         <link rel="stylesheet" href="/static/styles.css">
     </head>
 <body>
@@ -28,14 +28,20 @@
     </form>
 
     {% if recommendations %}
-    {% for rec in recommendations %}
-        <p><strong>책 이름:</strong> {{ rec['상품명'] }}</p>
-        <p><strong>저자:</strong> {{ rec['저자'] }}</p>
-        <p><strong>출판사:</strong> {{ rec['출판사'] }}</p>
-        <p><strong>설명:</strong> {{ rec['설명'] }}</p>
-        <p><strong>선호도 점수:</strong> {{ rec['선호도 점수'] }}</p>
-    <hr>    
-    {% endfor %}
-{% endif %}
+        <div class="box">
+            {% for rec in recommendations %}
+                <div class="myDiv">
+                    <a href="https://www.yes24.com/Product/Goods/120246952"> <img src = "{{rec['url']}}"> </a>
+                    <p><strong>책 이름:</strong> {{ rec['상품명'] }}</p>
+                    <p><strong>저자:</strong> {{ rec['저자'] }}</p>
+                    <p><strong>출판사:</strong> {{ rec['출판사'] }}</p>
+                    <p><strong>설명:</strong> {{ rec['설명'][:100] }}</p>
+                    <p><strong>선호도 점수:</strong> {{ rec['선호도 점수'] }}</p>
+                    <button>선택</button>
+                </div>
+                <hr>
+            {% endfor %}
+        </div>
+    {% endif %}
 </body>
 </html>
