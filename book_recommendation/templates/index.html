@@ -35,7 +35,7 @@
                     <p><strong>책 이름:</strong> {{ rec['상품명'] }}</p>
                     <p><strong>저자:</strong> {{ rec['저자'] }}</p>
                     <p><strong>출판사:</strong> {{ rec['출판사'] }}</p>
-                    <p><strong>설명:</strong> {{ rec['설명'][:100] }}</p>
+                    <p><strong>설명:</strong> {{ rec['설명'] | truncate(100, end='...') }}</p>
                     <p><strong>선호도 점수:</strong> {{ rec['선호도 점수'] }}</p>
                     <button>선택</button>
                 </div>
