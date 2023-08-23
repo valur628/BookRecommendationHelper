@@ -29,7 +29,7 @@ class bookrec:
     def book_recommend(self, user_genre, selected_books):
         df = self.df
         df['선호도 점수'] = 0
-        df.loc[df['중위 장르'].eq(user_genre) | df['하위 장르'].eq(user_genre), '선호도 점수'] += 0.01
+        df.loc[df['중위 장르'].eq(user_genre) | df['하위 장르'].eq(user_genre), '선호도 점수'] += 0.05
         for book in selected_books:
             idx = self.indices[book]
             sim_scores = list(enumerate(self.cosine_sim[idx]))
