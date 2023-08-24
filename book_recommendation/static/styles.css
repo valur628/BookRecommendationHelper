@@ -12,6 +12,7 @@ hr {
     border: 5px outset skyblue;
     background-color: white;    
     text-align: center;
+    width:1000px;
 }
 .box{
     border: 3px outset red;
