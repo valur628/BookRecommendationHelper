@@ -7,15 +7,6 @@
         <link rel="stylesheet" href="/static/styles.css">
     </head>
 <body>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul class=flashes>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
     <h1>책 추천</h1>
     <form method="POST">
         <label>중위 장르 선택:</label>

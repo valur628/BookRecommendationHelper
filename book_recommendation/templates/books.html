@@ -8,15 +8,7 @@
     </head>
 <body>
     <h1>책 추천</h1>
-
-    <form method="POST">
-        <label>하위 장르 선택:</label>
-        <select name="genre">
-            {% for gen in genre %}
-                <option value="{{ gen }}">{{ gen }}</option>
-            {% endfor %}
-        </select>
-
+    <form action="/books" method="POST">
         <label>선호하는 책 선택:</label>
         <select multiple name="books">
             {% for book in names %}

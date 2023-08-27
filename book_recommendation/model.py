@@ -5,8 +5,7 @@ from sklearn.metrics.pairwise import linear_kernel
 import os
 
 class State:
-    def __init__(self, genre, names, rec_model):
-        self.genre = genre
+    def __init__(self, names, rec_model):
         self.names = names
         self.rec_model = rec_model
 
@@ -20,7 +19,6 @@ class bookrec:
         df['판매가'] = df['판매가'].str.replace("원", "").str.replace(",", "").astype(int)
         df['판매가 점수'] = 1 - (df['판매가'] - df['판매가'].min()) / (df['판매가'].max() - df['판매가'].min())
         df['중위 장르'] = df['관리분류'].apply(lambda x: x.split('-')[1])
-        df['하위 장르'] = df['관리분류'].apply(lambda x: x.split('-')[2])
 
         self.tf = TfidfVectorizer(stop_words='english')
         df['설명'] = df['설명'].fillna('')
@@ -28,13 +26,11 @@ class bookrec:
         self.cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
         self.indices = pd.Series(df.index, index=df['상품명']).drop_duplicates()
         self.df = df
-        self.genre = df['하위 장르'].unique().tolist()
         self.names = df['상품명'].tolist()
 
-    def book_recommend(self, user_genre, selected_books):
+    def book_recommend(self, selected_books):
         df = self.df
         df['선호도 점수'] = 0
-        df.loc[df['중위 장르'].eq(user_genre) | df['하위 장르'].eq(user_genre), '선호도 점수'] += 0.05
         for book in selected_books:
             idx = self.indices[book]
             sim_scores = list(enumerate(self.cosine_sim[idx]))
@@ -46,3 +42,5 @@ class bookrec:
 
         recommendations = df.nlargest(5, '선호도 점수')
         return [dict(row) for _, row in recommendations.iterrows()]
+    
+    #정확성 문제 발생 수정해야함

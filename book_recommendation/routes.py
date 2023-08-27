@@ -1,6 +1,8 @@
-from flask import Blueprint, render_template, request, flash, g
+from flask import Blueprint, render_template, request, flash, g, redirect, url_for
 from .model import State, bookrec
 import random
+from flask import session
+import traceback
 
 bp = Blueprint('main', __name__)
 
@@ -13,26 +15,38 @@ def select_genre():
         from . import create_app
         g.mid_genres = create_app().mid_genres
     mid_genres = g.mid_genres
-
     if request.method == 'POST':
         mid_genre = request.form.get("mid_genre")
         if mid_genre:
-            new_rec = bookrec(mid_genre)
-            g.state = State(new_rec.genre, new_rec.names, new_rec)
-            return render_template('books.html', genre=g.state.genre, names=random_books(g.state))
+            session['mid_genre'] = mid_genre
+            return redirect(url_for('main.select_books'))
     return render_template('index.html', mid_genres=mid_genres)
 
 @bp.route('/books', methods=['GET', 'POST'])
 def select_books():
-    state = g.get('state')
-    if request.method == 'POST':
-        genre = request.form.get("genre")
-        selected_books = request.form.getlist("books")
-        if genre and selected_books:
-            recommendations = state.rec_model.book_recommend(genre, selected_books)
+    print("@@@ Calling select_books function @@@")
+    mid_genre = session.get('mid_genre', None)
+    if mid_genre is None:
+        return redirect(url_for('main.select_genre'))
+    rec = bookrec(mid_genre)
+    state = State(rec.names, rec)
+    print(f"@@@ Current state: {state} @@@")
+    if state is not None:
+        if request.method == 'POST':
+            print("@@@ POST method in select_books function @@@")
+            selected_books = request.form.getlist("books")
+            try:
+                print(f"@@@ Selected books: {selected_books} @@@")
+                recommendations = state.rec_model.book_recommend(selected_books)
+                print(f"@@@ Recommendations: {recommendations} @@@")
+            except:
+                recommendations = [traceback.format_exc()]
+                print("@@@ Error during Recommendation: @@@")
+                print(recommendations)
+            return render_template('books.html', names=random_books(state), recommendations=recommendations)
         else:
-            recommendations = []
-            flash('하위 장르와 책 선택은 필수입니다.')
+            print("@@@ GET method in select_books function @@@")
+            return render_template('books.html', names=random_books(state))
     else:
-        recommendations = []
-    return render_template('books.html', genre=state.genre, names=random_books(state), recommendations=recommendations)
+        print("@@@ State is None in select_books function @@@")
+        return redirect(url_for('main.select_genre'))

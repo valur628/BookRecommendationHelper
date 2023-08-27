@@ -1,8 +1,10 @@
-from flask import Flask, g
+from flask import Flask, g, session
 from .model import bookrec
 import os
 import pandas as pd
-from . import routes
+from book_recommendation import routes
+from dotenv import load_dotenv
+load_dotenv()
 
 def create_app():
     app = Flask(__name__)
@@ -13,5 +15,6 @@ def create_app():
     mid_genres = [file.split('-')[1].split('.')[0] for file in genre_files if file.count('-') == 1 and file.endswith('.csv')]
 
     app.mid_genres = mid_genres
+    app.secret_key = os.getenv('SECRET_KEY')
 
     return app
