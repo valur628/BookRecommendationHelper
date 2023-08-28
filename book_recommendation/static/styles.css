@@ -17,8 +17,8 @@ hr {
 .box{
     border: 3px outset red;
     display: flex;
-    
 }
+
 .line_limit {
     width: 100px;
     overflow:hidden;
