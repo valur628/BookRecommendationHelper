@@ -24,29 +24,29 @@ def select_genre():
 
 @bp.route('/books', methods=['GET', 'POST'])
 def select_books():
-    print("@@@ Calling select_books function @@@")
+    print("@@@ select_books 함수 호출 중... @@@")
     mid_genre = session.get('mid_genre', None)
     if mid_genre is None:
         return redirect(url_for('main.select_genre'))
     rec = bookrec(mid_genre)
     state = State(rec.names, rec)
-    print(f"@@@ Current state: {state} @@@")
+    print(f"@@@ 현 상태: {state} @@@")
     if state is not None:
         if request.method == 'POST':
-            print("@@@ POST method in select_books function @@@")
+            print("@@@ select_books 함수의 POST 메서드 시작 @@@")
             selected_books = request.form.getlist("books")
             try:
-                print(f"@@@ Selected books: {selected_books} @@@")
+                print(f"@@@ 선택된 책: {selected_books} @@@")
                 recommendations = state.rec_model.book_recommend(selected_books)
-                print(f"@@@ Recommendations: {recommendations} @@@")
+                print(f"@@@ 책 추천: {recommendations} @@@")
             except:
                 recommendations = [traceback.format_exc()]
-                print("@@@ Error during Recommendation: @@@")
+                print("@@@ 추천 중 오류: @@@")
                 print(recommendations)
             return render_template('books.html', names=random_books(state), recommendations=recommendations)
         else:
-            print("@@@ GET method in select_books function @@@")
+            print("@@@ select_books 함수의 GET 메서드 시작 @@@")
             return render_template('books.html', names=random_books(state))
     else:
-        print("@@@ State is None in select_books function @@@")
+        print("@@@ select_books 함수의 상태는 None입니다. @@@")
         return redirect(url_for('main.select_genre'))
