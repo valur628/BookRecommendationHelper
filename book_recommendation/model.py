@@ -20,7 +20,7 @@ class bookrec:
         df['판매가 점수'] = 1 - (df['판매가'] - df['판매가'].min()) / (df['판매가'].max() - df['판매가'].min())
         df['중위 장르'] = df['관리분류'].apply(lambda x: x.split('-')[1])
 
-        self.tf = TfidfVectorizer(stop_words='english')
+        self.tf = TfidfVectorizer(stop_words='english', sublinear_tf=True, max_df=0.5, min_df=2)
         df['설명'] = df['설명'].fillna('')
         tfidf_matrix = self.tf.fit_transform(df['설명'])
         self.cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
@@ -41,6 +41,6 @@ class bookrec:
                 df.loc[i, '선호도 점수'] += sim_scores[book_indices.index(i)][1] if not isinstance(sim_scores[book_indices.index(i)][1], np.ndarray) else sim_scores[book_indices.index(i)][1][0]
 
         recommendations = df.nlargest(5, '선호도 점수')
-        return [dict(row) for _, row in recommendations.iterrows()]
+        return [dict(row) for _, row in recommendations.iterrows()], (recommendations['선호도 점수'] - recommendations['선호도 점수'].min()) / (recommendations['선호도 점수'].max() - recommendations['선호도 점수'].min())
     
     #정확성 문제 발생 수정해야함

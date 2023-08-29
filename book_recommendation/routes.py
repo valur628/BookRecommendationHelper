@@ -37,8 +37,8 @@ def select_books():
             selected_books = request.form.getlist("books")
             try:
                 print(f"@@@ 선택된 책: {selected_books} @@@")
-                recommendations = state.rec_model.book_recommend(selected_books)
-                print(f"@@@ 책 추천: {recommendations} @@@")
+                recommendations, scores = state.rec_model.book_recommend(selected_books)
+                print(f"@@@ 책 추천: {recommendations}, 점수: {scores} @@@")
             except:
                 recommendations = [traceback.format_exc()]
                 print("@@@ 추천 중 오류: @@@")
