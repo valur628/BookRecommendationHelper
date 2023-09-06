@@ -37,10 +37,10 @@
 
 ***
 
-   [Flask]: <https://nodejs.org/>
-   [Scikit-learn]: <https://axios-http.com/>
-   [Pandas]: <https://cdn.sheetjs.com/>
-   [Dotenv]: <https://github.com/ashtuchkin/iconv-lite>
+   [Flask]: <https://flask.palletsprojects.com/>
+   [Scikit-learn]: <https://scikit-learn.org/stable/>
+   [Pandas]: <https://pandas.pydata.org/>
+   [Dotenv]: <https://www.npmjs.com/package/dotenv>
 
    [BookRecommendationHelper Repository]: <https://github.com/valur628/BookRecommendationHelper>
    [BookInfoDataCrawler Repository]: <https://github.com/valur628/BookInfoDataCrawler>
